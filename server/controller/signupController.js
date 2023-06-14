@@ -1,11 +1,13 @@
 //require bcrypt
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
 //require database
 const db = require('../models/activityModel');
 
 const signupController = {};
 
+//Check if user exists in database before committing to creating a new user
 signupController.checkForUser = async (req, res, next) => {
 
   //destructure request body
@@ -15,7 +17,7 @@ signupController.checkForUser = async (req, res, next) => {
   if(typeof email !== 'string') return next({
     log: 'Error in signupController.checkForUser, email needs to be a string',
     message: { err: 'email not a string' }
-  })
+  });
   
   //prep query
   const query = `SELECT email FROM user_info WHERE email = '${email}';`
@@ -24,7 +26,7 @@ signupController.checkForUser = async (req, res, next) => {
   const check = await db.query(query)
     .then(data => data)
     .catch(err => next({
-      log: 'An error occurred in the query in signupController.checkForUser = async',
+      log: 'An error occurred in the query in signupController.checkForUser',
       message: { err: `${ err }` }
     }))
   
@@ -39,6 +41,7 @@ signupController.checkForUser = async (req, res, next) => {
   return next();
 }
 
+//If checkForUser returns true create a new user in the database and return user information
 signupController.createUser = async (req, res, next) => {
   
   //check results from checkForUser and if false invoke next middleware

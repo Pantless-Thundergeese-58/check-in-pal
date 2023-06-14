@@ -1,12 +1,12 @@
 const express = require('express');
 
-//import controller
+const loginController = require('../controller/loginController');
 
 const router = express.Router();
 
 //route handlers
-router.post('/', (req, res) => {
-  return res.status(200).json('TBD');
+router.post('/', loginController.checkForUser, loginController.loginUser, (req, res) => {
+  return res.status(200).json(res.locals.loginStatus);
 })
 
 module.exports = router;
