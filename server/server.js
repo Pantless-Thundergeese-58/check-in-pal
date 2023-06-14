@@ -18,12 +18,16 @@ app.use(express.urlencoded({ extended: true }));
 const switchRouter = require('./routes/switch');
 const activityRouter = require('./routes/activity');
 const checkoutRouter = require ('./routes/checkout');
+const loginRouter = require ('./routes/login');
+const signupRouter = require ('./routes/signup');
 
 
 // Route handlers
 app.use('/switch', switchRouter);
 app.use('/activity', activityRouter);
 app.use('/checkout', checkoutRouter);
+app.use('/login', loginRouter);
+app.use('/signup', signupRouter);
 
 
 
