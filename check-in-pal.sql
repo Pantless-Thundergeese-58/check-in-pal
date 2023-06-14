@@ -1,0 +1,6 @@
+CREATE TABLE user_info (
+	_id int GENERATED ALWAYS AS IDENTITY,
+	PRIMARY KEY (_id),
+	email TEXT NOT NULL,
+	password TEXT NOT NULL
+);
