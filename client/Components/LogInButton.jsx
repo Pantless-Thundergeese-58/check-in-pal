@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"
 
-const CheckinButton = () => {
+const LogInButton = () => {
   // declaring var for our hook
   const navigate = useNavigate();
   
@@ -18,4 +18,4 @@ const CheckinButton = () => {
   )
 }
 
-export default CheckinButton;
+export default LogInButton;

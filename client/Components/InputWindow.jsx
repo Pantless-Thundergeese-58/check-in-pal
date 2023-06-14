@@ -59,9 +59,9 @@ const InputWindow = ({setActivity}) => {
       <form id="textandbutton">
 
         {/* when user types in inputfield, we are updating the state of input */}
-        <input id="inputfield" type="text" ref={inputRef} value={input} placeholder='E.g.: Algorithm practicing, job searching, etc...' onChange={e => setInput(e.target.value)}></input>
+        <input id="inputfield-email" type="text" ref={inputRef} value={input} placeholder='E.g.: Algorithm practicing, job searching, etc...' onChange={e => setInput(e.target.value)}></input>
         {/* Submit button with an onClick to call our handleActivity function */}
-        <button id="inputbutton" onClick={handleActivity}>Submit</button>
+        <button id="inputbutton-password" onClick={handleActivity}>Submit</button>
       </form>
     </div>
   )
