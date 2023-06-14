@@ -76,9 +76,9 @@ loginController.loginUser = async (req, res, next) => {
     }));
 
   if(testPass) {
-    res.locals.loginStatus = userInfo._id;
+    res.locals.loginStatus = { result: userInfo._id };
   } else {
-    res.locals.loginStatus = false;
+    res.locals.loginStatus = { result: false };
   };
   
   return next();
