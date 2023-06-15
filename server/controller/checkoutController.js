@@ -8,7 +8,8 @@ checkoutController.getAllTableData = async (req, res, next) => {
  
   const { user_id, time_unit, activity } = req.body
 
-  const dayQuery = //does not take in activity
+  //beginning of queries that DO NOT take activity arguments
+  const dayQuery = 
   `WITH day_table AS
   (
     SELECT
@@ -21,9 +22,8 @@ checkoutController.getAllTableData = async (req, res, next) => {
     duration
     FROM time_card
     WHERE startime >= DATE(now()) - interval '7 days' 
-    AND startime <= now() 
-    AND user_id = ${user_id}
-    -- 	AND activity = ''
+      AND startime <= now() 
+      AND user_id = ${user_id}
     )
     
     SELECT day,
@@ -32,15 +32,186 @@ checkoutController.getAllTableData = async (req, res, next) => {
     FROM day_table
     GROUP BY day, activity;`;
     
-  const weekQuery = `tbd`;
-  const monthQuery = `tbd`;
-  const yearQuery = `tbd`;
+  const weekQuery = 
+    `WITH week_table AS
+    (
+    SELECT
+    EXTRACT(week FROM now()) - EXTRACT(week FROM startime) AS weeksAgo,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime >= DATE(now()) - interval '4 weeks' - (DATE_PART('isodow', NOW()) || ' ' || 'days')::interval
+      AND startime <= now() 
+      AND user_id = ${user_id}
+    )    
+
     
+    SELECT weeksAgo,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM week_table
+    GROUP BY weeksAgo, activity;`;
+  
+  const monthQuery = 
+    `WITH month_table AS
+    (
+    SELECT
+    to_char(startime, 'Month') AS month,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime >= DATE_TRUNC('year', NOW()) 
+      AND startime <= now() 
+      AND user_id = ${user_id}
+    )
+
+    SELECT month,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM month_table
+    GROUP BY month, activity`;
+
+  const yearQuery = 
+    `WITH year_table AS
+    (
+    SELECT
+    EXTRACT(year FROM startime) AS year,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime <= now() 
+      AND user_id = ${user_id}
+    )
+
+    SELECT year,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM year_table
+    GROUP BY year, activity`;
+
+  //beginning of queries that DO take activity arguments
+  const dayActQuery = 
+    `WITH day_table AS
+    (
+      SELECT
+      to_char(startime, 'Day') AS day,
+      startime,
+      user_id,
+      activity,
+      endtime,
+      EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+      duration
+      FROM time_card
+      WHERE startime >= DATE(now()) - interval '7 days' 
+        AND startime <= now() 
+        AND user_id = ${user_id}
+        AND activity = '${activity}'
+      )
+      
+      SELECT day,
+      activity,
+      sum(duration_minutes) AS duration
+      FROM day_table
+      GROUP BY day, activity;`;
+
+  const weekActQuery = 
+    `WITH week_table AS
+    (
+    SELECT
+    EXTRACT(week FROM now()) - EXTRACT(week FROM startime) AS weeksAgo,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime >= DATE(now()) - interval '4 weeks' - (DATE_PART('isodow', NOW()) || ' ' || 'days')::interval
+      AND startime <= now() 
+      AND user_id = ${user_id}
+      AND activity = '${activity}'
+    )    
+
+    
+    SELECT weeksAgo,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM week_table
+    GROUP BY weeksAgo, activity;`;
+    
+  const monthActQuery = 
+    `WITH month_table AS
+    (
+    SELECT
+    to_char(startime, 'Month') AS month,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime >= DATE_TRUNC('year', NOW()) 
+      AND startime <= now() 
+      AND user_id = ${user_id}
+      AND activity = '${activity}'
+    )
+
+    SELECT month,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM month_table
+    GROUP BY month, activity`;
+  
+  const yearActQuery = 
+    `WITH year_table AS
+    (
+    SELECT
+    EXTRACT(year FROM startime) AS year,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime <= now() 
+      AND user_id = ${user_id}
+      AND activity = '${activity}'
+    )
+
+    SELECT year,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM year_table
+    GROUP BY year, activity`;
+   
+  //reference when activity is undefined
   const timeTypes = {
     day: dayQuery,
     week: weekQuery,
     month: monthQuery,
     year: yearQuery,
+  }
+
+  //reference when activity is defined
+  const timeTypesAct = {
+    day: dayActQuery,
+    week: weekActQuery,
+    month: monthActQuery,
+    year: yearActQuery,
   }
 
     //check data types
@@ -67,29 +238,23 @@ checkoutController.getAllTableData = async (req, res, next) => {
     }
 
   //create query variable
-  const text = timeTypes[time_unit];
+  let text;
+  if(activity) {
+    text = timeTypesAct[time_unit];
+  } else {
+    text = timeTypes[time_unit];
+  }
 
   // Execute the SQL query and store the result in the 'result' variable
   const result = await db.query(text)
-    .then(data => data)
+    .then(data => data.rows)
     .catch(err => next({
       log: 'An error occured when querying the database in checkoutController.getAllTableData',
       message: { err: `${err}` }
     }));
     
-  console.log('result of query', result);
+  res.locals.stats = result;
 
-  // Create a property called 'timecard' on the res.locals object, assign it the rows property (which is an array of objects) of the result object on line 16
-  // res.locals.timecard = result.rows;
-    
-  // Take the last ids endtime the first ids start time and subtract to get the total hours
-  // const totalHours = res.locals.timecard[res.locals.timecard.length - 1].endtime - res.locals.timecard[0].starttime;
-  //push totalHours variable into the end of the res.locals.timecard array
-  // res.locals.timecard.push({ total: totalHours });
-
-  // console.log('totalHours is: ', totalHours);
-  // console.log('res.locals.timecard is: ', res.locals.timecard);
-  //continue to the next middleware function
   return next();
 };
 
