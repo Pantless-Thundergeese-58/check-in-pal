@@ -32,16 +32,16 @@ checkoutController.getAllTableData = async (req, res, next) => {
     FROM day_table
     GROUP BY day, activity;`;
     
-    const weekQuery = `tbd`;
-    const monthQuery = `tbd`;
-    const yearQuery = `tbd`;
+  const weekQuery = `tbd`;
+  const monthQuery = `tbd`;
+  const yearQuery = `tbd`;
     
-    const timeTypes = {
-      day: dayQuery,
-      week: weekQuery,
-      month: monthQuery,
-      year: yearQuery,
-    }
+  const timeTypes = {
+    day: dayQuery,
+    week: weekQuery,
+    month: monthQuery,
+    year: yearQuery,
+  }
 
     //check data types
     if (typeof time_unit !== 'string' || !timeTypes[time_unit]) {
