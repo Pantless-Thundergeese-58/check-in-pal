@@ -22,7 +22,7 @@ const signUp = () => {
             console.log('response from signup ', response);
 
             if (typeof response.result === 'number') {
-                navigate('/main');
+                navigate('/home');
             }
             else {
                 alert('This email address is already in use')
@@ -34,11 +34,13 @@ const signUp = () => {
     }
 
     return (
-        <form>
-            <input id="signup-email" type="text" value={email} placeholder="Email" onChange={e => setEmail(e.target.value)}></input>
-            <input id="signup-password" type="password" value={password} placeholder="Password" onChange={e => setPassword(e.target.value)}></input>
+        <div className="signUpContainer">
+            <h1 id="title">Focus.</h1>
+            <input className="inputfield" type="text" value={email} placeholder="Email" onChange={e => setEmail(e.target.value)}></input>
+            <input className="inputfield" type="password" value={password} placeholder="Password" onChange={e => setPassword(e.target.value)}></input>
             <button onClick={signUpClick}>Sign Up</button>
-        </form>
+            <button className="textButton" onClick={() => navigate('/')}>Log In</button>
+        </div>
     )
 }
 

@@ -1,12 +1,10 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'
 
 // drilling prop setActivity for use in our component
-const InputWindow = ({setActivity}) => {
+const ActivityPrompt = ({activity, setActivity, setTaskSubmit}) => {
   // declaring input as a new state initially at '', with setter function setInput
   const [ input, setInput ] = useState('');
-  const navigate = useNavigate();
 
   // focusing input field when component renders
   const inputRef = useRef(null);
@@ -14,13 +12,13 @@ const InputWindow = ({setActivity}) => {
     inputRef.current.focus();
   }, []);
 
-  // holds refresh prevention, setActivity/setInput functionality, and runs another function
+  // holds refresh prevention, setActivity/setInput, starts time 
   function handleActivity (e) {
     e.preventDefault();
     setActivity(input);
+    setTaskSubmit(true);
     logTime();
     setInput('');
-    navigate("/activity");
   }
 
   // called from handleActivity(), async to ensure the promise is fulfilled first
@@ -55,16 +53,16 @@ const InputWindow = ({setActivity}) => {
 
   // returning div inputwindow
   return (
-    <div className="inputwindow">
+  <div className='activityContainer'>
+      <h1 id="featureTitle">Task</h1>
       <form id="textandbutton">
-
-        {/* when user types in inputfield, we are updating the state of input */}
-        <input id="inputfield-email" type="text" ref={inputRef} value={input} placeholder='E.g.: Algorithm practicing, job searching, etc...' onChange={e => setInput(e.target.value)}></input>
-        {/* Submit button with an onClick to call our handleActivity function */}
+        <input className="inputfield" type="text" ref={inputRef} value={input} placeholder='eg: cook, algo practice' onChange={e => setInput(e.target.value)}></input>
         <button id="inputbutton-password" onClick={handleActivity}>Submit</button>
       </form>
-    </div>
+    <h1 id="activity">{activity}</h1>
+  </div>
   )
 }
 //export 
-export default InputWindow;
+export default ActivityPrompt;
+
