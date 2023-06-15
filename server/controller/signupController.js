@@ -76,20 +76,20 @@ signupController.createUser = async (req, res, next) => {
     }));
 
 
-    //prep query
-    const query = `INSERT INTO user_info (email, password) VALUES ('${email}', '${newHash}') RETURNING _id;`
+  //prep query
+  const query = `INSERT INTO user_info (email, password) VALUES ('${email}', '${newHash}') RETURNING _id;`
 
-    //add new user to query
-    const addUser = db.query(query)
-      .then(data => {
-        //return new user info -> currently set to user _id pending future features
-        res.locals.signupStatus = { result: data.rows[0]._id };
-        return next();
-      })
-      .catch(err => next({
-        log: 'An error occurred adding the new user',
-        message: { err: `${err}` } 
-      }))
+  //add new user to query
+  const addUser = db.query(query)
+    .then(data => {
+      //return new user info -> currently set to user _id pending future features
+      res.locals.signupStatus = { result: data.rows[0]._id };
+      return next();
+    })
+    .catch(err => next({
+      log: 'An error occurred adding the new user',
+      message: { err: `${err}` } 
+    }))
 }
 
 //export module

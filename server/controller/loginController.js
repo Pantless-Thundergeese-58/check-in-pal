@@ -12,8 +12,8 @@ loginController.checkForUser = async (req, res, next) => {
   //destructure req.body
   const { email } = req.body;
 
-   //check data types of passed in information
-   if(typeof email !== 'string' || !email) return next({
+  //check data types of passed in information
+  if(typeof email !== 'string' || !email) return next({
     log: 'Error in loginController.checkForUser, email needs to be a string',
     message: { err: 'email must be a string' }
   });
