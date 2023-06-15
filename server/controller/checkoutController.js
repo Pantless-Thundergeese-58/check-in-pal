@@ -21,8 +21,8 @@ checkoutController.getAllTableData = async (req, res, next) => {
     duration
     FROM time_card
     WHERE startime >= DATE(now()) - interval '7 days' 
-    AND startime <= now() 
-    AND user_id = ${user_id}
+      AND startime <= now() 
+      AND user_id = ${user_id}
     -- 	AND activity = ''
     )
     
@@ -32,7 +32,30 @@ checkoutController.getAllTableData = async (req, res, next) => {
     FROM day_table
     GROUP BY day, activity;`;
     
-  const weekQuery = `tbd`;
+  const weekQuery = 
+    `WITH week_table AS
+    (
+    SELECT
+    EXTRACT(week FROM now()) - EXTRACT(week FROM startime) AS week,
+    startime,
+    user_id,
+    activity,
+    endtime,
+    EXTRACT(EPOCH FROM (endtime - startime)) / 60 AS duration_minutes,
+    duration
+    FROM time_card
+    WHERE startime >= DATE(now()) - interval '4 weeks' - (DATE_PART('isodow', NOW()) || ' ' || 'days')::interval
+      AND startime <= now() 
+      AND user_id = 2
+    )    
+
+    
+    SELECT week,
+    activity,
+    sum(duration_minutes) AS duration
+    FROM week_table
+    GROUP BY week, activity;`;
+  
   const monthQuery = `tbd`;
   const yearQuery = `tbd`;
     
