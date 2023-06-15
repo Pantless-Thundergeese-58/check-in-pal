@@ -14,9 +14,9 @@ signupController.checkForUser = async (req, res, next) => {
   const { email } = req.body;
 
   //check data types of passed in information
-  if(typeof email !== 'string') return next({
+  if(typeof email !== 'string' || !email) return next({
     log: 'Error in signupController.checkForUser, email needs to be a string',
-    message: { err: 'email not a string' }
+    message: { err: 'email must be a string' }
   });
   
   //prep query
@@ -54,9 +54,9 @@ signupController.createUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   //check data type of password
-  if(typeof password !== 'string') return next({
+  if(typeof password !== 'string' || !password) return next({
     log: 'Error in signupController.checkForUser, password needs to be a string',
-    message: { err: 'password not a string' }
+    message: { err: 'password must be a string' }
   })
 
   //create salt for hash
@@ -76,20 +76,20 @@ signupController.createUser = async (req, res, next) => {
     }));
 
 
-    //prep query
-    const query = `INSERT INTO user_info (email, password) VALUES ('${email}', '${newHash}') RETURNING _id;`
+  //prep query
+  const query = `INSERT INTO user_info (email, password) VALUES ('${email}', '${newHash}') RETURNING _id;`
 
-    //add new user to query
-    const addUser = db.query(query)
-      .then(data => {
-        //return new user info -> currently set to user _id pending future features
-        res.locals.signupStatus = { result: data.rows[0]._id };
-        return next();
-      })
-      .catch(err => next({
-        log: 'An error occurred adding the new user',
-        message: { err: `${err}` } 
-      }))
+  //add new user to query
+  const addUser = db.query(query)
+    .then(data => {
+      //return new user info -> currently set to user _id pending future features
+      res.locals.signupStatus = { result: data.rows[0]._id };
+      return next();
+    })
+    .catch(err => next({
+      log: 'An error occurred adding the new user',
+      message: { err: `${err}` } 
+    }))
 }
 
 //export module

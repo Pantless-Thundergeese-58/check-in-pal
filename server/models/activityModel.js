@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const activityController = require('../controller/switchController');
 
-const PG_URI = 'postgres://qqouxail:3ArW_5SxQetm498XwfALdRUc3oX2GKfU@fanny.db.elephantsql.com/qqouxail'
+const PG_URI = 'postgres://gqvofmte:qJ1vsexOtSzbTHb44TQKoNp2nQtzY7pr@rajje.db.elephantsql.com/gqvofmte'
 // create a new pool here using the connection string above
 const pool = new Pool({
   connectionString: PG_URI
