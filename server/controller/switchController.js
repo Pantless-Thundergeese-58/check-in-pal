@@ -15,41 +15,29 @@ switchController.postActivity = async (req, res, next) => {
     })
   }
 
- //Try & catch block
-  try {
+
 //  SQL method to insert data into the time_card table   
-    const text = `
-    INSERT INTO time_card (user_id, activity, startime)
-    VALUES ($1, $2, $3)
-    RETURNING id;
-    `;
+  const text = 
+  `INSERT INTO time_card (user_id, activity, startime)
+  VALUES ($1, $2, $3)
+  RETURNING id;`;
 
 //create a variable that holds the params values
-    const params = [user_id, activity, startTime];
-    //Query the result
-    const result = await db.query(text, params)
-      .then(data => data.rows[0].id)
-      .catch(err => next({
-        log: 'Error in switchController.postActivity when creating data entry',
-        message: { err: `${err}` }
-      }));
+  const params = [user_id, activity, startTime];
+  //Query the result
+  const result = await db.query(text, params)
+    .then(data => data.rows[0].id)
+    .catch(err => next({
+      log: 'Error in switchController.postActivity when creating data entry',
+      message: { err: `${err}` }
+    }));
 
 
-    //extract row id from result
-    res.locals.timerid = { result: result }
+  //extract row id from result
+  res.locals.timerid = { result: result }
 
-    //allow for the middleware function to continue to next function/middleware
-    next();
-  }
-  //catch error handler
-  catch(err) {
-    next({
-      log: 'Express error handler caught in switchController.postActivity middleware',
-      status: 400,
-      message: { err: 'Failed to insert to database' }
-    });
-  }
-
+  //allow for the middleware function to continue to next function/middleware
+  next();
 };
 
 //export module

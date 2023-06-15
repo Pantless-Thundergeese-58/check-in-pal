@@ -15,37 +15,24 @@ activityController.updateEndtime = async (req, res, next) => {
     })
   }
 
-  try {
-    // SQL query string for the patch request
-    const text = `
-    UPDATE time_card
-    SET endtime = $1, duration = (endtime - startime)
-    WHERE id = $2
-    `;
+  // SQL query string for the patch request
+  const text = 
+  `UPDATE time_card
+  SET endtime = $1, duration = (endtime - startime)
+  WHERE id = $2`;
     
-    // Array params that dynamically assigns the value on line 15 for the SET part of the SQL query
-    const params = [endTime, timer_id];
-    // Store the result of the db query asynchronously in the result constant.
-    const result = await db.query(text, params)
-      .then(data => data)
-      .catch(err => next({
-        log: 'Error in activityController.updateEndtime when creating data entry',
-        message: { err: `${err}` }
-      }))
+  // Array params that dynamically assigns the value on line 15 for the SET part of the SQL query
+  const params = [endTime, timer_id];
+  // Store the result of the db query asynchronously in the result constant.
+  const result = await db.query(text, params)
+    .then(data => data)
+    .catch(err => next({
+      log: 'Error in activityController.updateEndtime when creating data entry',
+      message: { err: `${err}` }
+    }))
 
-    return next();
-  }
-  
-  // Error handler for failed db query
-  catch(err) {
-    next({
-      log: 'Express error handler caught in activityController.updateEndtime middleware',
-      status: 400,
-      message: { err: 'Failed to update endtime in database' }
-    });
-  }
-
-  };
+  return next();
+ };
   
 
 module.exports = activityController;
