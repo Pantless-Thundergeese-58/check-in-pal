@@ -14,9 +14,9 @@ signupController.checkForUser = async (req, res, next) => {
   const { email } = req.body;
 
   //check data types of passed in information
-  if(typeof email !== 'string') return next({
+  if(typeof email !== 'string' || !email) return next({
     log: 'Error in signupController.checkForUser, email needs to be a string',
-    message: { err: 'email not a string' }
+    message: { err: 'email must be a string' }
   });
   
   //prep query
@@ -54,9 +54,9 @@ signupController.createUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   //check data type of password
-  if(typeof password !== 'string') return next({
+  if(typeof password !== 'string' || !password) return next({
     log: 'Error in signupController.checkForUser, password needs to be a string',
-    message: { err: 'password not a string' }
+    message: { err: 'password must be a string' }
   })
 
   //create salt for hash
