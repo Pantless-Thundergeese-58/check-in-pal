@@ -4,10 +4,11 @@ import ActivityPrompt from '../Components/ActivityPrompt.jsx'
 import TimerBox from '../Components/Timer.jsx'
 import { Switch, Checkout} from '../Components/SwitchAndCheckout.jsx';
 
-const Home = () => {
+const Home = ({userId, timerId, setTimerId}) => {
 
 const [ activity, setActivity ] = useState('');
-const [ taskSubmit, setTaskSubmit ] = useState(false);
+const [ isTimerRunning, setIsTimerRunning ] = useState(false);
+console.log('current user id', userId);
 
   // consider updating classes/how styling is applied to components 
   return (
@@ -16,11 +17,11 @@ const [ taskSubmit, setTaskSubmit ] = useState(false);
         <h1 id="title">Focus.</h1>
       </div>
       <div className="featureContainer">
-        <ActivityPrompt setActivity={setActivity} activity={activity} setTaskSubmit={setTaskSubmit} />
-        <TimerBox activity={activity} taskSubmit={taskSubmit} setTaskSubmit={setTaskSubmit}/> 
+        <ActivityPrompt activity={activity} setActivity={setActivity} userId={userId} timerId={timerId} setTimerId={setTimerId}/>
+        <TimerBox activity={activity} isTimerRunning={isTimerRunning} setIsTimerRunning={setIsTimerRunning} /> 
       </div>
     </div>
   )
 }
 
-export default Home;1
+export default Home;
