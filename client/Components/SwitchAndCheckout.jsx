@@ -15,7 +15,7 @@ const Switch = () => {
   
     // declares endTime set to military time to send to the database for calculations
     const endTime = hours * 100 + minutes;
-    // ========== NEEDS MORE FUNCTIONALITY TO SEND endTime TO THE DATABASE ==========
+    // ========== FUNCTIONALITY TO SEND endTime TO THE DATABASE ==========
     try {
       const response = await fetch ('http://localhost:3000/activity', {
         //specify the method that is going to be used

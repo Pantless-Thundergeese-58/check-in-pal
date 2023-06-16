@@ -8,6 +8,8 @@ const LogIn = () => {
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
 
+  console.log('email state - ',email)
+  console.log('password state - ',email)
   // declare function that will be invoked once button is clicked
   async function logInClick (event) {
     
@@ -24,11 +26,11 @@ const LogIn = () => {
 
       response = await response.json();
       console.log('response from login ', response);
+      
       // if result id
       if (typeof response.result === 'number') {
-        navigate('/main')
+        navigate('/home')
       }
-      // if result false
       else {
         alert('Invalid email or password')
       }
@@ -46,17 +48,17 @@ const LogIn = () => {
 
   // returning the hompage div
   return (
-    <div className="homepage">
+    <div className="loginpage">
       {/* Display the welcome message  */}
-      <h1 id="welcome">Hi! I'm your check in pal.</h1>
+      <h1 id="title">Focus.</h1>
       {/* Email input field */}
-      <input id="login-email" type="text" value={email} placeholder="Email" onChange={e => setEmail(e.target.value)}></input>
+      <input className="inputfield" type="text" value={email} placeholder="Email" onChange={e => setEmail(e.target.value)}></input>
       {/* Password input field => should be chage the type as 'password' to not to display what user type in*/}
-      <input id="login-password" type="password" value={password} placeholder="Password" onChange={e => setPassword(e.target.value)}></input>
+      <input className="inputfield" type="password" value={password} placeholder="Password" onChange={e => setPassword(e.target.value)}></input>
        {/* Login button */}
       <button onClick={logInClick}>Log In</button>
        {/* Figure out route */}
-      <button onClick={signUpClick}>Sign Up</button>
+      <button className="textButton" onClick={signUpClick}>Sign Up</button>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 #GIT COMMANDS
 
 when you want to push up, these are the steps:
+
 1. git checkout dev (locally switch to dev branch)
 2. git pull origin dev (pull updates of dev down to your local system)
 3. git checkout <your branch> (switch back to your branch locally)
