@@ -45,3 +45,4 @@ const signUp = () => {
 }
 
 export default signUp;
+export default signUp;
