@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 
-const signUp = () => {
+const signUp = ({ userId, setUserId }) => {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const signUp = () => {
             console.log('response from signup ', response);
 
             if (typeof response.result === 'number') {
+                setUserId(response.result);
                 navigate('/home');
             }
             else {

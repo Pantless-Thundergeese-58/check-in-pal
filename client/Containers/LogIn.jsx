@@ -3,13 +3,14 @@ import LogInButton from "../Components/LogInButton.jsx";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 
-const LogIn = () => {
+const LogIn = ({userId, setUserId}) => {
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
 
   console.log('email state - ',email)
   console.log('password state - ',email)
+  console.log('current user id', userId)
   // declare function that will be invoked once button is clicked
   async function logInClick (event) {
     
@@ -29,7 +30,8 @@ const LogIn = () => {
       
       // if result id
       if (typeof response.result === 'number') {
-        navigate('/home')
+        setUserId(response.result);
+        navigate('/home');
       }
       else {
         alert('Invalid email or password')
